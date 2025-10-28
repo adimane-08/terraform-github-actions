@@ -1,0 +1,17 @@
+name: Test Self-Hosted Runner
+
+on:
+  workflow_dispatch:   # lets you trigger it manually from GitHub
+
+jobs:
+  test:
+    runs-on: self-hosted     # matches your HP-LAPTOP runner
+    steps:
+      - name: Check connectivity
+        run: echo "✅ Runner is online and connected."
+
+      - name: Check Docker
+        run: docker ps
+
+      - name: Check kubectl access
+        run: kubectl get nodes
