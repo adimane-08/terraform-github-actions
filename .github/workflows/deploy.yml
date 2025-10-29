@@ -1,4 +1,4 @@
-name: Terraform Deployment to Minikube
+name: CI/CD with Docker + Terraform + Minikube
 
 on:
   push:
@@ -7,12 +7,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  terraform:
+  build-deploy:
     runs-on: self-hosted
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Login to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t adimane0801/myapp:latest .
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push adimane0801/myapp:latest
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.0
 
       - name: Terraform Init
         run: terraform init
