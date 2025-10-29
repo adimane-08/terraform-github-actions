@@ -38,7 +38,7 @@ resource "kubernetes_deployment" "nginx" {
       spec {
         container {
           name  = "myapp"
-          image = "myapp:latest"
+          image = "adimane0801/myapp:latest"
           port {
             container_port = 80
           }
