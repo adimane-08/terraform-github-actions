@@ -1,42 +1,31 @@
-name: Terraform + Docker + Minikube CI/CD
+name: Terraform Deployment to Minikube
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  terraform:
     runs-on: self-hosted
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check connectivity
-        run: echo "✅ Runner is online and connected."
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.0
 
-      - name: Check Docker
-        run: docker ps
-
-      - name: Build Docker image
-        run: docker build -t myapp:latest .
-
-      - name: Verify image
-        run: docker images | findstr myapp
-
-      - name: Check Minikube & kubectl
-        run: |
-          kubectl get nodes
-          kubectl get pods -A
-
-      - name: Initialize Terraform
+      - name: Terraform Init
         run: terraform init
 
-      - name: Apply Terraform
-        run: terraform apply -auto-approve
+      - name: Terraform Validate
+        run: terraform validate
 
-      - name: Verify Deployment
-        run: |
-          kubectl get pods -n myapp
-          kubectl get svc -n myapp
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
