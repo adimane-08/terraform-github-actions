@@ -1,9 +1,27 @@
 name: First workflow
-on: [push]
 
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 jobs:
-  hello:
+  learn:
     runs-on: self-hosted
+
     steps:
-      - name: Say hello
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Greet the world
         run: echo "Hello, world!"
+
+      - name: List files
+        run: ls -la
+
+      - name: Show environment info
+        run: |
+          echo "Running on $(uname -a)"
+          echo "Current directory: $(pwd)"
+          echo "Files in directory:"
+          ls -la
