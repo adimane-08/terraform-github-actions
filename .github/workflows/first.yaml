@@ -17,7 +17,7 @@ jobs:
         run: echo "Hello, world!"
 
       - name: List files
-        run: ls -la
+        run: Get-ChildItem -Force
 
       - name: Show environment info
         run: |
